@@ -31,7 +31,9 @@ public:
         connect(pitchSlider, &QSlider::valueChanged, [=](int value) {
             pitchLabel->setText(QString("Pitch Shift (Semitones): %1").arg(value));
             pitchShiftSemitones = value;
-               qDebug() << std::pow(2.0, value / 4.0);
+            double pitchFactor = (value + 12) / 24.0 * 2.0;//std::pow(2.0, value / 12.0);
+            pitchFactor = std::max(0.1, std::min(2.0, pitchFactor));
+               qDebug() << pitchFactor;
         });
 
         // Play button
@@ -79,9 +81,11 @@ if (lastDot != std::string::npos) {
             return;
         }
 
-        double pitchFactor =  std::pow(2.0, pitchShiftSemitones / 4.0);
+        double pitchFactor = (pitchShiftSemitones + 12) / 24.0 * 2.0;// std::pow(2.0, pitchShiftSemitones / 12);
+        pitchFactor = std::max(0.1, std::min(2.0, pitchFactor));
         QString pitchShiftCmd = QString("asetrate=44100*%1,atempo=1/%1").arg(pitchFactor);
 
+        std::max(0.0, std::min(2.0, pitchFactor));
         qDebug() << pitchFactor;
 
         QProcess ffmpeg;
