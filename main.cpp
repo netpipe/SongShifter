@@ -85,9 +85,13 @@ if (lastDot != std::string::npos) {
         qDebug() << pitchFactor;
 
         QProcess ffmpeg;
-        QString command = QString("./ffmpeg -i \"%1\" -af \"%2\" \"%3\"")
+#ifdef __APPLE__
+        QString command = QString("/Applications/SongShifter.app/Contents/MacOS/ffmpeg -i \"%1\" -af \"%2\" \"%3\"")
             .arg(inputFilePath, pitchShiftCmd, outputFilePath);
-
+#else
+        QString command = QString("ffmpeg -i \"%1\" -af \"%2\" \"%3\"")
+            .arg(inputFilePath, pitchShiftCmd, outputFilePath);
+#endif
         qDebug() << "Running command:" << command;
 
         ffmpeg.start("/bin/bash", QStringList() << "-c" << command);
